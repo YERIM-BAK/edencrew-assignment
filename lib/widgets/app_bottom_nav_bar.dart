@@ -71,8 +71,16 @@ class _NavItem extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Icon(icon, color: color, size: 22),
-            const SizedBox(height: 4),
-            Text(label, style: TextStyle(color: color, fontSize: 11)),
+            const SizedBox(height: 3),
+            Text(
+              label,
+              style: TextStyle(
+                color: color,
+                fontWeight: AppTypography.regular,
+                fontSize: 11,
+                height: 14 / 11,
+              ),
+            ),
           ],
         ),
       ),
