@@ -21,3 +21,16 @@ final quotesProvider =
     AsyncNotifierProvider<QuotesNotifier, Map<String, Quote>>(
       QuotesNotifier.new,
     );
+
+final stockQuoteProvider = FutureProvider.family<Quote?, String>((
+  ref,
+  symbol,
+) async {
+  final existingQuotes = ref.read(quotesProvider).value;
+  if (existingQuotes != null && existingQuotes.containsKey(symbol)) {
+    return existingQuotes[symbol]; // 관심종목이면 재사용
+  }
+
+  final quotes = await QuoteService().fetchQuote([symbol]);
+  return quotes[symbol]; // 없으면 이 종목만 새로 조회
+});
