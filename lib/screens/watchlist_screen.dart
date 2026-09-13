@@ -8,6 +8,7 @@ import 'package:edencrew_assignment_starter/providers/sort_provider.dart';
 import 'package:edencrew_assignment_starter/providers/watchlist_provider.dart';
 import 'package:edencrew_assignment_starter/theme/theme.dart';
 import 'package:edencrew_assignment_starter/widgets/empty_state.dart';
+import 'package:edencrew_assignment_starter/models/quote.dart';
 import 'package:edencrew_assignment_starter/widgets/selection_bottom_sheet.dart';
 import 'package:edencrew_assignment_starter/widgets/watchlist_row_tile.dart';
 
@@ -18,6 +19,10 @@ class WatchlistScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final AppColors colors = context.colors;
     final AppDimens dimens = context.dimens;
+
+    final AsyncValue<Map<String, Quote>> quotesAsync = ref.watch(
+      quotesProvider,
+    );
 
     final Map favorites = ref.watch(favoritesProvider);
     final List items = ref.watch(watchlistProvider);
@@ -60,8 +65,9 @@ class WatchlistScreen extends ConsumerWidget {
                           selected: sortOption,
                           labelBuilder: sortOptionLabel,
                           onSelect: (SortOption option) {
-                            ref.read(sortOptionProvider.notifier).state =
-                                option;
+                            ref
+                                .read(sortOptionProvider.notifier)
+                                .select(option); // .state = option 대신
                           },
                         ),
                       );
@@ -83,6 +89,21 @@ class WatchlistScreen extends ConsumerWidget {
                 ],
               ),
             ),
+            if (quotesAsync.hasError)
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: dimens.space4,
+                  vertical: dimens.space2,
+                ),
+                child: Text(
+                  '시세를 불러오지 못했습니다. 새로고침 버튼을 눌러 다시 시도해 주세요.',
+                  style: TextStyle(
+                    color: colors.feedbackWarning,
+                    fontSize: 12,
+                    fontWeight: AppTypography.medium,
+                  ),
+                ),
+              ),
             Expanded(
               child: favorites.isEmpty
                   ? EmptyState(
