@@ -1,3 +1,4 @@
+import 'package:edencrew_assignment_starter/screens/stock_detail_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'package:edencrew_assignment_starter/models/quote.dart';
@@ -17,54 +18,59 @@ class WatchlistRowTile extends StatelessWidget {
     final AppDimens dimens = context.dimens;
     final Quote? quote = item.quote;
 
-    return Container(
-      constraints: BoxConstraints(minHeight: dimens.rowMinHeight),
-      padding: EdgeInsets.symmetric(
-        horizontal: dimens.space4,
-        vertical: dimens.space3,
+    return GestureDetector(
+      onTap: () => Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => StockDetailScreen(stock: item.stock)),
       ),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: colors.borderSubtle,
-            width: dimens.borderHairline,
-          ),
+      child: Container(
+        constraints: BoxConstraints(minHeight: dimens.rowMinHeight),
+        padding: EdgeInsets.symmetric(
+          horizontal: dimens.space4,
+          vertical: dimens.space3,
         ),
-      ),
-      child: Row(
-        children: <Widget>[
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  item.stock.name,
-                  style: TextStyle(
-                    color: colors.textPrimary,
-                    fontWeight: AppTypography.medium,
-                    fontSize: 15,
-                    height: 20 / 15,
-                    letterSpacing: -0.1,
-                  ),
-                ),
-                SizedBox(height: dimens.space1),
-                Text(
-                  '${item.stock.symbol} · ${item.stock.market}',
-                  style: TextStyle(
-                    color: colors.textSecondary,
-                    fontWeight: AppTypography.regular,
-                    fontSize: 11,
-                    height: 14 / 11,
-                  ),
-                ),
-              ],
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(
+              color: colors.borderSubtle,
+              width: dimens.borderHairline,
             ),
           ),
-          if (quote == null)
-            _SkeletonPrice(colors: colors, dimens: dimens)
-          else
-            _PriceColumn(quote: quote, colors: colors, dimens: dimens),
-        ],
+        ),
+        child: Row(
+          children: <Widget>[
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    item.stock.name,
+                    style: TextStyle(
+                      color: colors.textPrimary,
+                      fontWeight: AppTypography.medium,
+                      fontSize: 15,
+                      height: 20 / 15,
+                      letterSpacing: -0.1,
+                    ),
+                  ),
+                  SizedBox(height: dimens.space1),
+                  Text(
+                    '${item.stock.symbol} · ${item.stock.market}',
+                    style: TextStyle(
+                      color: colors.textSecondary,
+                      fontWeight: AppTypography.regular,
+                      fontSize: 11,
+                      height: 14 / 11,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            if (quote == null)
+              _SkeletonPrice(colors: colors, dimens: dimens)
+            else
+              _PriceColumn(quote: quote, colors: colors, dimens: dimens),
+          ],
+        ),
       ),
     );
   }

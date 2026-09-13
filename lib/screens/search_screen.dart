@@ -1,3 +1,4 @@
+import 'package:edencrew_assignment_starter/screens/stock_detail_screen.dart';
 import 'package:edencrew_assignment_starter/widgets/app_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -157,6 +158,11 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               stock: stock,
               query: query,
               isFavorite: isFavorite,
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => StockDetailScreen(stock: stock),
+                ),
+              ),
               onToggleFavorite: () {
                 final bool nowFavorite = !isFavorite;
                 ref.read(favoritesProvider.notifier).toggle(stock);
