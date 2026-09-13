@@ -98,7 +98,12 @@ class SearchResultTile extends ConsumerWidget {
     );
 
     if (index < 0) {
-      return Text(name, style: baseStyle);
+      return Text(
+        name,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: baseStyle,
+      );
     }
 
     final String before = name.substring(0, index);
@@ -106,6 +111,8 @@ class SearchResultTile extends ConsumerWidget {
     final String after = name.substring(index + query.length);
 
     return RichText(
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
       text: TextSpan(
         style: baseStyle,
         children: <TextSpan>[
