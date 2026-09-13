@@ -7,8 +7,10 @@ import 'package:edencrew_assignment_starter/models/stock_ref.dart';
 import 'package:edencrew_assignment_starter/providers/favorites_provider.dart';
 import 'package:edencrew_assignment_starter/providers/search_provider.dart';
 import 'package:edencrew_assignment_starter/theme/theme.dart';
-import 'package:edencrew_assignment_starter/widgets/empty_state.dart';
+import 'package:edencrew_assignment_starter/widgets/status_message.dart';
 import 'package:edencrew_assignment_starter/widgets/search_result_tile.dart';
+import 'dart:developer' as developer;
+import 'package:flutter/foundation.dart' show kDebugMode;
 
 class SearchScreen extends ConsumerStatefulWidget {
   const SearchScreen({super.key});
@@ -113,9 +115,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
   Widget _buildBody(BuildContext context, String query) {
     final AppColors colors = context.colors;
+    final AppDimens dimens = context.dimens;
 
     if (query.isEmpty) {
-      return EmptyState(
+      return StatusMessage(
         icon: SvgPicture.asset(
           'assets/icons/ico_search.svg',
           colorFilter: ColorFilter.mode(colors.textTertiary, BlendMode.srcIn),
@@ -129,11 +132,36 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
     return results.when(
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (Object error, StackTrace stackTrace) =>
-          Center(child: Text('오류가 발생했습니다: $error')),
+      error: (Object error, StackTrace stackTrace) {
+        if (kDebugMode) {
+          developer.log(
+            '검색 실패',
+            error: error,
+            stackTrace: stackTrace,
+            name: 'SearchScreen',
+          );
+        }
+        return Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              StatusMessage(
+                icon: const Icon(Icons.error_outline),
+                title: '검색 중 문제가 발생했습니다',
+                message: '잠시 후 다시 시도해 주세요.',
+              ),
+              SizedBox(height: dimens.space3),
+              TextButton(
+                onPressed: () => ref.invalidate(searchResultsProvider),
+                child: const Text('다시 시도'),
+              ),
+            ],
+          ),
+        );
+      },
       data: (List<StockRef> stocks) {
         if (stocks.isEmpty) {
-          return EmptyState(
+          return StatusMessage(
             icon: SvgPicture.asset(
               'assets/icons/ico_search_empty.svg',
               colorFilter: ColorFilter.mode(
