@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:edencrew_assignment_starter/models/quote.dart';
 import 'package:edencrew_assignment_starter/models/stock_ref.dart';
+import 'package:edencrew_assignment_starter/providers/favorites_provider.dart';
 import 'package:edencrew_assignment_starter/providers/meta_provider.dart';
 import 'package:edencrew_assignment_starter/providers/watchlist_provider.dart';
 import 'package:edencrew_assignment_starter/theme/theme.dart';
@@ -27,58 +28,74 @@ class WatchlistRowTile extends ConsumerWidget {
     final String displayName = metaAsync.value?.name ?? item.stock.name;
     final String displayMarket = metaAsync.value?.market ?? item.stock.market;
 
-    return GestureDetector(
-      onTap: () => Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => StockDetailScreen(stock: item.stock)),
+    return Dismissible(
+      key: ValueKey(item.stock.canonicalId),
+      direction: DismissDirection.endToStart,
+      onDismissed: (_) {
+        ref.read(favoritesProvider.notifier).remove(item.stock);
+      },
+      background: Container(
+        color: colors.feedbackWarning,
+        alignment: Alignment.centerRight,
+        padding: EdgeInsets.symmetric(horizontal: dimens.space4),
+        child: Icon(Icons.delete, color: colors.selectedForeground),
       ),
-      child: Container(
-        constraints: BoxConstraints(minHeight: dimens.rowMinHeight),
-        padding: EdgeInsets.symmetric(
-          horizontal: dimens.space4,
-          vertical: dimens.space3,
+      child: GestureDetector(
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => StockDetailScreen(stock: item.stock)),
         ),
-        decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(
-              color: colors.borderSubtle,
-              width: dimens.borderHairline,
-            ),
+        child: Container(
+          constraints: BoxConstraints(minHeight: dimens.rowMinHeight),
+          padding: EdgeInsets.symmetric(
+            horizontal: dimens.space4,
+            vertical: dimens.space3,
           ),
-        ),
-        child: Row(
-          children: <Widget>[
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    displayName,
-                    style: TextStyle(
-                      color: colors.textPrimary,
-                      fontWeight: AppTypography.medium,
-                      fontSize: 15,
-                      height: 20 / 15,
-                      letterSpacing: -0.1,
-                    ),
-                  ),
-                  SizedBox(height: dimens.space1),
-                  Text(
-                    '${item.stock.symbol} · $displayMarket',
-                    style: TextStyle(
-                      color: colors.textSecondary,
-                      fontWeight: AppTypography.regular,
-                      fontSize: 11,
-                      height: 14 / 11,
-                    ),
-                  ),
-                ],
+          decoration: BoxDecoration(
+            color: colors.surfaceBase,
+            border: Border(
+              bottom: BorderSide(
+                color: colors.borderSubtle,
+                width: dimens.borderHairline,
               ),
             ),
-            if (quote == null)
-              _SkeletonPrice(colors: colors, dimens: dimens)
-            else
-              _PriceColumn(quote: quote, colors: colors, dimens: dimens),
-          ],
+          ),
+          child: Row(
+            children: <Widget>[
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      displayName,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: colors.textPrimary,
+                        fontWeight: AppTypography.medium,
+                        fontSize: 15,
+                        height: 20 / 15,
+                        letterSpacing: -0.1,
+                      ),
+                    ),
+                    SizedBox(height: dimens.space1),
+                    Text(
+                      '${item.stock.symbol} · $displayMarket',
+                      style: TextStyle(
+                        color: colors.textSecondary,
+                        fontWeight: AppTypography.regular,
+                        fontSize: 11,
+                        height: 14 / 11,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              if (quote == null)
+                _SkeletonPrice(colors: colors, dimens: dimens)
+              else
+                _PriceColumn(quote: quote, colors: colors, dimens: dimens),
+            ],
+          ),
         ),
       ),
     );
