@@ -26,7 +26,7 @@ void main() {
     final document = html_parser.parse(decoded);
     final table = document.querySelector('table.type2');
 
-    final rows = table!.querySelectorAll('tr[onmouseover]');
+    final rows = table!.querySelectorAll('tr[onMouseOver]');
 
     final firstRow = rows[0];
     final tds = firstRow.querySelectorAll('td');
