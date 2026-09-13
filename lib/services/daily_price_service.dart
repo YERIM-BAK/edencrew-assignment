@@ -66,9 +66,10 @@ class DailyPriceService {
     final lastPageHref = document
         .querySelector('td.pgRR a')
         ?.attributes['href'];
-    final lastPage = int.parse(
-      RegExp(r'page=(\d+)').firstMatch(lastPageHref!)!.group(1)!,
-    );
+
+    final lastPage = lastPageHref != null
+        ? int.parse(RegExp(r'page=(\d+)').firstMatch(lastPageHref)!.group(1)!)
+        : page;
 
     return DailyPricePage(prices: prices, lastPage: lastPage);
   }
