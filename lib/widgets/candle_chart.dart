@@ -24,6 +24,7 @@ class CandleChart extends StatelessWidget {
           prices: prices.reversed.toList(),
           upColor: colors.chartLineUp,
           downColor: colors.chartLineDown,
+          flatColor: colors.chartLineFlat,
           wickColor: colors.chartBaseline,
         ),
       ),
@@ -35,12 +36,14 @@ class _CandleChartPainter extends CustomPainter {
   final List<DailyPrice> prices;
   final Color upColor;
   final Color downColor;
+  final Color flatColor;
   final Color wickColor;
 
   _CandleChartPainter({
     required this.prices,
     required this.upColor,
     required this.downColor,
+    required this.flatColor,
     required this.wickColor,
   });
 
@@ -67,7 +70,6 @@ class _CandleChartPainter extends CustomPainter {
     for (int i = 0; i < prices.length; i++) {
       final DailyPrice price = prices[i];
       final double centerX = slotWidth * i + slotWidth / 2;
-      final bool isUp = price.close >= price.open;
 
       // 꼬리 (고가 ~ 저가) — chartBaseline 고정 색
       canvas.drawLine(
@@ -76,8 +78,13 @@ class _CandleChartPainter extends CustomPainter {
         wickPaint,
       );
 
-      // 몸통 (시가 ~ 종가) — 상승/하락 색
-      final Paint bodyPaint = Paint()..color = isUp ? upColor : downColor;
+      // 몸통 (시가 ~ 종가) — 상승/하락/보합 색
+      final Paint bodyPaint = Paint()
+        ..color = price.close > price.open
+            ? upColor
+            : price.close < price.open
+            ? downColor
+            : flatColor;
       final double top = yFor(max(price.open, price.close));
       final double bottom = yFor(min(price.open, price.close));
       canvas.drawRect(
