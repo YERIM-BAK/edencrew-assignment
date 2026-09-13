@@ -37,9 +37,15 @@ String formatVolumeAbbreviated(int volume) {
   return '${formatWithComma(volume ~/ 1000)}천';
 }
 
-/// 시가총액을 조 단위로 축약 (예: 1063000000000000 -> "1,063조")
+/// 시가총액을 조/억 단위로 축약 (1조 이상 -> "1,063조", 미만 -> "3,201억")
 String formatMarketCapAbbreviated(int marketCap) {
-  return '${formatWithComma(marketCap ~/ 1000000000000)}조';
+  const int jo = 1000000000000; // 조
+  const int eok = 100000000; // 억
+
+  if (marketCap >= jo) {
+    return '${formatWithComma(marketCap ~/ jo)}조';
+  }
+  return '${formatWithComma(marketCap ~/ eok)}억';
 }
 
 /// 날짜를 MM.DD 형태로 표시 (예: 2026-03-27 -> "03.27")
