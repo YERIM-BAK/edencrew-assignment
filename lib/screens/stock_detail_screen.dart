@@ -231,21 +231,27 @@ class StockDetailScreen extends ConsumerWidget {
                                   Expanded(
                                     child: SummaryCard(
                                       label: '시가',
-                                      value: formatWithComma(prices.first.open),
+                                      value: quote == null
+                                          ? '-'
+                                          : formatWithComma(quote.open),
                                     ),
                                   ),
                                   SizedBox(width: dimens.space2),
                                   Expanded(
                                     child: SummaryCard(
                                       label: '고가',
-                                      value: formatWithComma(prices.first.high),
+                                      value: quote == null
+                                          ? '-'
+                                          : formatWithComma(quote.high),
                                     ),
                                   ),
                                   SizedBox(width: dimens.space2),
                                   Expanded(
                                     child: SummaryCard(
                                       label: '저가',
-                                      value: formatWithComma(prices.first.low),
+                                      value: quote == null
+                                          ? '-'
+                                          : formatWithComma(quote.low),
                                     ),
                                   ),
                                 ],
