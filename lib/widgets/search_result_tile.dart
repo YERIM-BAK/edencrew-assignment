@@ -88,7 +88,10 @@ class SearchResultTile extends ConsumerWidget {
   }
 
   Widget _highlightedName(AppColors colors, String name) {
-    final int index = query.isEmpty ? -1 : name.indexOf(query);
+    final String lowerName = name.toLowerCase();
+    final String lowerQuery = query.toLowerCase();
+    final int index = lowerQuery.isEmpty ? -1 : lowerName.indexOf(lowerQuery);
+
     final TextStyle baseStyle = TextStyle(
       color: colors.textPrimary,
       fontWeight: AppTypography.medium,
