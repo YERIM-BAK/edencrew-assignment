@@ -69,8 +69,16 @@ SizedBox(height: context.dimens.space4)
 | `feedback/warning`  | `feedbackWarning`  | `amber/500`       | `#E8973A`     |
 | `feedback/skeleton` | `feedbackSkeleton` | `neutral/700`     | `#23231F`     |
 | `search/highlight`  | `searchHighlight`  | `violet/500`      | `#8B7CF6`     |
+| _(Figma에 없음)_    | `selectedForeground` | —                | `#FAFAFA`     |
+| _(Figma에 없음)_    | `scrim`            | —                  | `#000000` 50% |
+| _(Figma에 없음)_    | `shadow`           | —                  | `#000000` 55% |
 
 `alpha-12`는 해당 색상의 12% 불투명도입니다. (`0.12 × 255 = 31 = 0x1F`)
+
+아래 세 토큰은 Figma 변수에 없어 직접 판단해서 추가했습니다.
+- `selectedForeground` — 정렬 바텀시트에서 선택된 항목의 텍스트/체크 아이콘 색, 관심 목록 스와이프 삭제 배경의 아이콘 색
+- `scrim` — 모달 배리어(정렬 바텀시트 뒤 어둡게 처리)
+- `shadow` — 토스트 그림자. 기존에 화면 코드에 하드코딩되어 있던 값을 그대로 토큰화했습니다.
 
 등락 색상은 국내 시장 관행을 따릅니다. **상승은 빨강, 하락은 파랑**입니다.
 
@@ -87,12 +95,14 @@ SizedBox(height: context.dimens.space4)
 | `radius/sm`       | `radiusSm`       | 4   |
 | `radius/md`       | `radiusMd`       | 8   |
 | `radius/lg`       | `radiusLg`       | 12  |
-| `radius/xl`       | `radiusXl`       | 16  |
+| _(Figma에 없음)_  | `radiusXl`       | 16  |
 | `border/hairline` | `borderHairline` | 1   |
 | `icon/sm`         | `iconSm`         | 16  |
 | `icon/md`         | `iconMd`         | 20  |
 | `size/row-min`    | `rowMinHeight`   | 56  |
 | `size/tabbar`     | `tabBarHeight`   | 56  |
+
+`radiusXl`은 Figma 변수에 없어 직접 판단해서 추가했습니다 — 정렬 바텀시트 상단 모서리 radius(16)에 사용합니다.
 
 ## 서체 (`Typography`)
 

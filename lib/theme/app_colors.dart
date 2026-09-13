@@ -43,6 +43,8 @@ class AppColors extends ThemeExtension<AppColors> {
     required this.feedbackWarning,
     required this.feedbackSkeleton,
     required this.searchHighlight,
+    required this.scrim,
+    required this.shadow,
   });
 
   /// Figma `Semantic` 컬렉션의 Dark 모드 값입니다.
@@ -80,7 +82,9 @@ class AppColors extends ThemeExtension<AppColors> {
       selectedForeground = AppPalette.neutralFafafa,
       feedbackWarning = AppPalette.amber500,
       feedbackSkeleton = AppPalette.neutral700,
-      searchHighlight = AppPalette.violet500;
+      searchHighlight = AppPalette.violet500,
+      scrim = AppPalette.scrim,
+      shadow = AppPalette.shadow;
 
   /// 화면 배경 계층.
   final Color surfaceBase;
@@ -138,6 +142,9 @@ class AppColors extends ThemeExtension<AppColors> {
   /// 검색 결과에서 검색어와 일치하는 부분.
   final Color searchHighlight;
 
+  final Color scrim;
+  final Color shadow;
+
   @override
   AppColors copyWith({
     Color? surfaceBase,
@@ -174,6 +181,8 @@ class AppColors extends ThemeExtension<AppColors> {
     Color? feedbackWarning,
     Color? feedbackSkeleton,
     Color? searchHighlight,
+    Color? scrim,
+    Color? shadow,
   }) {
     return AppColors(
       surfaceBase: surfaceBase ?? this.surfaceBase,
@@ -210,6 +219,8 @@ class AppColors extends ThemeExtension<AppColors> {
       feedbackWarning: feedbackWarning ?? this.feedbackWarning,
       feedbackSkeleton: feedbackSkeleton ?? this.feedbackSkeleton,
       searchHighlight: searchHighlight ?? this.searchHighlight,
+      scrim: scrim ?? this.scrim,
+      shadow: shadow ?? this.shadow,
     );
   }
 
@@ -263,6 +274,8 @@ class AppColors extends ThemeExtension<AppColors> {
         t,
       )!,
       searchHighlight: Color.lerp(searchHighlight, other.searchHighlight, t)!,
+      scrim: Color.lerp(scrim, other.scrim, t)!,
+      shadow: Color.lerp(shadow, other.shadow, t)!,
     );
   }
 }

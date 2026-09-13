@@ -42,4 +42,6 @@ abstract final class AppPalette {
   static const Color redAlpha12 = Color(0x1FFF5B5B);
   static const Color blueAlpha12 = Color(0x1F4D9BEE);
   static const Color violetAlpha12 = Color(0x1F8B7CF6);
+  static const Color scrim = Color(0x80000000);
+  static const Color shadow = Color(0x8C000000);
 }
