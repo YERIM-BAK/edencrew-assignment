@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 import 'package:edencrew_assignment_starter/theme/theme.dart';
 
-class EmptyState extends StatelessWidget {
+class StatusMessage extends StatelessWidget {
   final Widget icon;
   final String title;
   final String message;
   final double? iconSize;
 
-  const EmptyState({
+  const StatusMessage({
     super.key,
     required this.icon,
     required this.title,

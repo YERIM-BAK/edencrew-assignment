@@ -7,7 +7,7 @@ import 'package:edencrew_assignment_starter/providers/quotes_provider.dart';
 import 'package:edencrew_assignment_starter/providers/sort_provider.dart';
 import 'package:edencrew_assignment_starter/providers/watchlist_provider.dart';
 import 'package:edencrew_assignment_starter/theme/theme.dart';
-import 'package:edencrew_assignment_starter/widgets/empty_state.dart';
+import 'package:edencrew_assignment_starter/widgets/status_message.dart';
 import 'package:edencrew_assignment_starter/models/quote.dart';
 import 'package:edencrew_assignment_starter/widgets/selection_bottom_sheet.dart';
 import 'package:edencrew_assignment_starter/widgets/watchlist_row_tile.dart';
@@ -106,7 +106,7 @@ class WatchlistScreen extends ConsumerWidget {
               ),
             Expanded(
               child: favorites.isEmpty
-                  ? EmptyState(
+                  ? StatusMessage(
                       icon: SvgPicture.asset(
                         'assets/icons/ico_star.svg',
                         colorFilter: ColorFilter.mode(
