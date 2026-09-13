@@ -53,10 +53,9 @@ class StockDetailScreen extends ConsumerWidget {
               // 헤더
               Container(
                 width: double.infinity,
-                height: 55, // 토큰 없음, Figma 값 그대로
                 padding: EdgeInsets.symmetric(
                   vertical: 10, // 토큰 없음, Figma 값 그대로
-                  horizontal: dimens.space4, // 16
+                  horizontal: dimens.space4,
                 ),
                 decoration: BoxDecoration(
                   border: Border(
@@ -80,7 +79,7 @@ class StockDetailScreen extends ConsumerWidget {
                         ),
                       ),
                     ),
-                    SizedBox(width: dimens.space3), // 12
+                    SizedBox(width: dimens.space3),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -88,6 +87,8 @@ class StockDetailScreen extends ConsumerWidget {
                         children: <Widget>[
                           Text(
                             displayName,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               color: colors.textPrimary,
                               fontWeight: AppTypography.medium,
@@ -108,7 +109,7 @@ class StockDetailScreen extends ConsumerWidget {
                         ],
                       ),
                     ),
-                    SizedBox(width: dimens.space3), // 12
+                    SizedBox(width: dimens.space3),
                     GestureDetector(
                       onTap: () {
                         final bool nowFavorite = !isFavorite;
@@ -137,8 +138,8 @@ class StockDetailScreen extends ConsumerWidget {
                 child: SingleChildScrollView(
                   padding: EdgeInsets.only(
                     top: 14, // 토큰 없음, Figma 값 그대로
-                    left: dimens.space4, // 16
-                    right: dimens.space4, // 16
+                    left: dimens.space4,
+                    right: dimens.space4,
                     bottom: 22, // 토큰 없음, Figma 값 그대로
                   ),
                   child: Column(
@@ -180,7 +181,7 @@ class StockDetailScreen extends ConsumerWidget {
                                   letterSpacing: -0.4,
                                 ),
                               ),
-                              SizedBox(width: dimens.space2), // 8
+                              SizedBox(width: dimens.space2),
                               Text(
                                 '$arrow ${formatChangeText(quote)}',
                                 style: TextStyle(
@@ -195,7 +196,7 @@ class StockDetailScreen extends ConsumerWidget {
                           );
                         },
                       ),
-                      SizedBox(height: dimens.space4), // 16, 가격-탭 간격
+                      SizedBox(height: dimens.space4),
                       PeriodTabBar(
                         selected: period,
                         onSelect: (ChartPeriod newPeriod) {
@@ -223,9 +224,9 @@ class StockDetailScreen extends ConsumerWidget {
 
                           return Column(
                             children: <Widget>[
-                              SizedBox(height: dimens.space4), // 16, 탭-차트 위 간격
+                              SizedBox(height: dimens.space4),
                               CandleChart(prices: prices),
-                              SizedBox(height: dimens.space4), // 16, 차트 아래 간격
+                              SizedBox(height: dimens.space4),
                               Row(
                                 children: <Widget>[
                                   Expanded(
@@ -282,7 +283,7 @@ class StockDetailScreen extends ConsumerWidget {
                                   ),
                                 ],
                               ),
-                              SizedBox(height: dimens.space6), // 24, 카드-표 간격
+                              SizedBox(height: dimens.space6),
                               DailyPriceTable(prices: prices),
                             ],
                           );
