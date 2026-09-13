@@ -1,22 +1,31 @@
 import 'package:edencrew_assignment_starter/screens/stock_detail_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:edencrew_assignment_starter/models/quote.dart';
+import 'package:edencrew_assignment_starter/models/stock_ref.dart';
+import 'package:edencrew_assignment_starter/providers/meta_provider.dart';
 import 'package:edencrew_assignment_starter/providers/watchlist_provider.dart';
 import 'package:edencrew_assignment_starter/theme/theme.dart';
 import 'package:edencrew_assignment_starter/utils/formatters.dart';
 
 /// 시세(quote) 데이터 들어오기 전까지 가격/등락 영역만 스켈레톤으로 표시
-class WatchlistRowTile extends StatelessWidget {
+class WatchlistRowTile extends ConsumerWidget {
   final WatchlistItem item;
 
   const WatchlistRowTile({super.key, required this.item});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final AppColors colors = context.colors;
     final AppDimens dimens = context.dimens;
     final Quote? quote = item.quote;
+
+    final AsyncValue<StockRef> metaAsync = ref.watch(
+      stockMetaProvider(item.stock.symbol),
+    );
+    final String displayName = metaAsync.value?.name ?? item.stock.name;
+    final String displayMarket = metaAsync.value?.market ?? item.stock.market;
 
     return GestureDetector(
       onTap: () => Navigator.of(context).push(
@@ -43,7 +52,7 @@ class WatchlistRowTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    item.stock.name,
+                    displayName,
                     style: TextStyle(
                       color: colors.textPrimary,
                       fontWeight: AppTypography.medium,
@@ -54,7 +63,7 @@ class WatchlistRowTile extends StatelessWidget {
                   ),
                   SizedBox(height: dimens.space1),
                   Text(
-                    '${item.stock.symbol} · ${item.stock.market}',
+                    '${item.stock.symbol} · $displayMarket',
                     style: TextStyle(
                       color: colors.textSecondary,
                       fontWeight: AppTypography.regular,

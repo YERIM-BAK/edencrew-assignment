@@ -11,6 +11,7 @@ import 'package:edencrew_assignment_starter/providers/daily_price_provider.dart'
 import 'package:edencrew_assignment_starter/providers/favorites_provider.dart';
 import 'package:edencrew_assignment_starter/providers/period_provider.dart';
 import 'package:edencrew_assignment_starter/providers/quotes_provider.dart';
+import 'package:edencrew_assignment_starter/providers/meta_provider.dart';
 import 'package:edencrew_assignment_starter/theme/theme.dart';
 import 'package:edencrew_assignment_starter/utils/formatters.dart';
 import 'package:edencrew_assignment_starter/widgets/candle_chart.dart';
@@ -26,6 +27,12 @@ class StockDetailScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final AppColors colors = context.colors;
     final AppDimens dimens = context.dimens;
+
+    final AsyncValue<StockRef> metaAsync = ref.watch(
+      stockMetaProvider(stock.symbol),
+    );
+    final String displayName = metaAsync.value?.name ?? stock.name;
+    final String displayMarket = metaAsync.value?.market ?? stock.market;
 
     final ChartPeriod period = ref.watch(chartPeriodProvider);
     final AsyncValue<List<DailyPrice>> dailyPricesAsync = ref.watch(
@@ -80,7 +87,7 @@ class StockDetailScreen extends ConsumerWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
                           Text(
-                            stock.name,
+                            displayName,
                             style: TextStyle(
                               color: colors.textPrimary,
                               fontWeight: AppTypography.medium,
@@ -90,7 +97,7 @@ class StockDetailScreen extends ConsumerWidget {
                             ),
                           ),
                           Text(
-                            '${stock.symbol} · ${stock.market}',
+                            '${stock.symbol} · $displayMarket',
                             style: TextStyle(
                               color: colors.textSecondary,
                               fontWeight: AppTypography.regular,

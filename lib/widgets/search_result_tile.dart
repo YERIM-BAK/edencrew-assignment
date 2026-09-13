@@ -1,10 +1,11 @@
-// lib/widgets/search_result_tile.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:edencrew_assignment_starter/models/stock_ref.dart';
+import 'package:edencrew_assignment_starter/providers/meta_provider.dart';
 import 'package:edencrew_assignment_starter/theme/theme.dart';
 
-class SearchResultTile extends StatelessWidget {
+class SearchResultTile extends ConsumerWidget {
   final StockRef stock;
   final String query;
   final bool isFavorite;
@@ -21,9 +22,15 @@ class SearchResultTile extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final AppColors colors = context.colors;
     final AppDimens dimens = context.dimens;
+
+    final AsyncValue<StockRef> metaAsync = ref.watch(
+      stockMetaProvider(stock.symbol),
+    );
+    final String displayName = metaAsync.value?.name ?? stock.name;
+    final String displayMarket = metaAsync.value?.market ?? stock.market;
 
     return InkWell(
       onTap: onTap,
@@ -47,10 +54,10 @@ class SearchResultTile extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  _highlightedName(colors),
+                  _highlightedName(colors, displayName),
                   const SizedBox(height: 2), // 토큰 없음, Figma 값 그대로
                   Text(
-                    '${stock.symbol} · ${stock.market}',
+                    '${stock.symbol} · $displayMarket',
                     style: TextStyle(
                       color: colors.textSecondary,
                       fontWeight: AppTypography.regular,
@@ -80,8 +87,7 @@ class SearchResultTile extends StatelessWidget {
     );
   }
 
-  Widget _highlightedName(AppColors colors) {
-    final String name = stock.name;
+  Widget _highlightedName(AppColors colors, String name) {
     final int index = query.isEmpty ? -1 : name.indexOf(query);
     final TextStyle baseStyle = TextStyle(
       color: colors.textPrimary,
