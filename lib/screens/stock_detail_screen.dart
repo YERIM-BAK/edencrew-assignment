@@ -3,6 +3,9 @@ import 'package:edencrew_assignment_starter/widgets/daily_price_table.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'dart:developer' as developer;
+import 'package:flutter/foundation.dart' show kDebugMode;
+import 'package:edencrew_assignment_starter/widgets/status_message.dart';
 
 import 'package:edencrew_assignment_starter/models/daily_price.dart';
 import 'package:edencrew_assignment_starter/models/quote.dart';
@@ -150,8 +153,33 @@ class StockDetailScreen extends ConsumerWidget {
                           height: 48,
                           child: Center(child: CircularProgressIndicator()),
                         ),
-                        error: (Object error, StackTrace stackTrace) =>
-                            Text('오류가 발생했습니다: $error'),
+                        error: (Object error, StackTrace stackTrace) {
+                          if (kDebugMode) {
+                            developer.log(
+                              '시세 조회 실패',
+                              error: error,
+                              stackTrace: stackTrace,
+                              name: 'StockDetailScreen',
+                            );
+                          }
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              StatusMessage(
+                                icon: const Icon(Icons.error_outline),
+                                iconSize: dimens.iconMd,
+                                title: '시세를 불러오지 못했습니다',
+                                message: '다시 시도해 주세요.',
+                              ),
+                              TextButton(
+                                onPressed: () => ref.invalidate(
+                                  stockQuoteProvider(stock.symbol),
+                                ),
+                                child: const Text('다시 시도'),
+                              ),
+                            ],
+                          );
+                        },
                         data: (Quote? quote) {
                           if (quote == null) {
                             return const SizedBox(height: 48);
@@ -209,10 +237,36 @@ class StockDetailScreen extends ConsumerWidget {
                           padding: EdgeInsets.symmetric(vertical: 32),
                           child: Center(child: CircularProgressIndicator()),
                         ),
-                        error: (Object error, StackTrace stackTrace) => Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 32),
-                          child: Center(child: Text('오류가 발생했습니다: $error')),
-                        ),
+                        error: (Object error, StackTrace stackTrace) {
+                          if (kDebugMode) {
+                            developer.log(
+                              '일별 시세 조회 실패',
+                              error: error,
+                              stackTrace: stackTrace,
+                              name: 'StockDetailScreen',
+                            );
+                          }
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 32),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                StatusMessage(
+                                  icon: const Icon(Icons.error_outline),
+                                  title: '차트를 불러오지 못했습니다',
+                                  message: '잠시 후 다시 시도해 주세요.',
+                                ),
+                                SizedBox(height: dimens.space3),
+                                TextButton(
+                                  onPressed: () => ref.invalidate(
+                                    dailyPriceProvider(stock.symbol),
+                                  ),
+                                  child: const Text('다시 시도'),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
                         data: (List<DailyPrice> prices) {
                           if (prices.isEmpty) {
                             return const Padding(
