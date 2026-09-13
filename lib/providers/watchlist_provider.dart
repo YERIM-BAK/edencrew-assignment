@@ -24,14 +24,16 @@ final watchlistProvider = Provider<List<WatchlistItem>>((ref) {
   }).toList();
 
   items.sort((itemA, itemB) {
-    if (itemA.quote == null && itemB.quote == null) return 0;
-    if (itemA.quote == null) return 1;
-    if (itemB.quote == null) return -1;
-
     switch (sortOption) {
       case SortOption.currentPrice:
+        if (itemA.quote == null && itemB.quote == null) return 0;
+        if (itemA.quote == null) return 1;
+        if (itemB.quote == null) return -1;
         return itemB.quote!.currentPrice.compareTo(itemA.quote!.currentPrice);
       case SortOption.changeRate:
+        if (itemA.quote == null && itemB.quote == null) return 0;
+        if (itemA.quote == null) return 1;
+        if (itemB.quote == null) return -1;
         return itemB.quote!.changeRate.compareTo(itemA.quote!.changeRate);
       case SortOption.alphabetical:
         return itemA.stock.name.compareTo(itemB.stock.name);
