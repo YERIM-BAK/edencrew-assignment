@@ -33,10 +33,10 @@ class AppToast {
                 color: colors.borderSubtle,
                 width: dimens.borderHairline,
               ),
-              boxShadow: const <BoxShadow>[
+              boxShadow: <BoxShadow>[
                 BoxShadow(
-                  color: Color(0x8C000000),
-                  offset: Offset(0, 8),
+                  color: colors.shadow,
+                  offset: const Offset(0, 8),
                   blurRadius: 24,
                 ),
               ],

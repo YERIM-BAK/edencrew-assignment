@@ -58,7 +58,7 @@ class WatchlistScreen extends ConsumerWidget {
                       showModalBottomSheet<void>(
                         context: context,
                         backgroundColor: Colors.transparent,
-                        barrierColor: const Color(0x80000000),
+                        barrierColor: colors.scrim,
                         builder: (_) => SelectionBottomSheet<SortOption>(
                           title: '정렬',
                           options: SortOption.values,
