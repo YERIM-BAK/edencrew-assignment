@@ -31,3 +31,26 @@ String formatChangeText(Quote quote) {
     return '0 (0.00%)';
   }
 }
+
+/// 거래량을 천 단위로 축약 (예: 29113466 -> "29,113천")
+String formatVolumeAbbreviated(int volume) {
+  return '${formatWithComma(volume ~/ 1000)}천';
+}
+
+/// 시가총액을 조 단위로 축약 (예: 1063000000000000 -> "1,063조")
+String formatMarketCapAbbreviated(int marketCap) {
+  return '${formatWithComma(marketCap ~/ 1000000000000)}조';
+}
+
+/// 날짜를 MM.DD 형태로 표시 (예: 2026-03-27 -> "03.27")
+String formatMonthDay(DateTime date) {
+  final String month = date.month.toString().padLeft(2, '0');
+  final String day = date.day.toString().padLeft(2, '0');
+  return '$month.$day';
+}
+
+/// 등락액에 부호를 붙여 콤마 포맷 (예: 1200 -> "+1,200", -400 -> "-400", 0 -> "0")
+String formatSignedComma(int value) {
+  if (value > 0) return '+${formatWithComma(value)}';
+  return formatWithComma(value); // 음수는 formatWithComma가 이미 '-' 붙여줌
+}
