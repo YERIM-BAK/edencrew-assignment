@@ -36,9 +36,6 @@ class WatchlistRowTile extends ConsumerWidget {
       },
       background: Container(
         color: colors.feedbackWarning,
-        alignment: Alignment.centerRight,
-        padding: EdgeInsets.symmetric(horizontal: dimens.space4),
-        child: Icon(Icons.delete, color: colors.selectedForeground),
       ),
       child: GestureDetector(
         onTap: () => Navigator.of(context).push(

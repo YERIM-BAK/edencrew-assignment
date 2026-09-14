@@ -69,7 +69,7 @@ class SelectionBottomSheet<T> extends StatelessWidget {
                       labelBuilder(option),
                       style: TextStyle(
                         color: isSelected
-                            ? colors.selectedForeground
+                            ? colors.textPrimary
                             : colors.textSecondary,
                         fontSize: 15,
                         fontWeight: AppTypography.medium,
