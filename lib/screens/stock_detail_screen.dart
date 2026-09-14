@@ -90,8 +90,6 @@ class StockDetailScreen extends ConsumerWidget {
                         children: <Widget>[
                           Text(
                             displayName,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               color: colors.textPrimary,
                               fontWeight: AppTypography.medium,
