@@ -1,117 +1,86 @@
-# Flutter 신입 개발자 과제
-
-국내 주식 관심종목 앱의 화면 3개를 **Flutter 코드**로 구현하고, 그중 한 화면을 저희 플랫폼 **Lucy Studio**로 다시 만드는 과제입니다. 전체 기간은 4일입니다.
-
-이 문서는 저장소를 실행하고 디자인 토큰을 쓰는 방법만 다룹니다. **과제 요구사항은 아래 문서에 있습니다.**
-
-| 문서 | 내용 |
-| --- | --- |
-| [`docs/ASSIGNMENT.md`](docs/ASSIGNMENT.md) | 화면별 요구사항, 평가 기준, 제출 방법 |
-| [`docs/NAVER_API.md`](docs/NAVER_API.md) | Naver 데이터 연동 가이드 (endpoint 4개) |
-
-**Figma 시안 링크는 안내 메일에 담겨 있습니다.** 시안의 `Screens` 페이지에는 화면 3개 외에 빈 상태 · 정렬 · 토스트처럼 같은 화면의 다른 상태를 그린 프레임과, 토큰 확인용 `Design Tokens — Dark` 프레임이 함께 있습니다. 어떤 프레임이 무엇인지는 [`docs/ASSIGNMENT.md`의 대상 화면](docs/ASSIGNMENT.md#대상-화면)에 정리해 두었습니다.
-
-AI 도구를 활용해도 괜찮습니다. 다만 이후 기술 면접에서 구현 내용을 구체적으로 질문할 예정이니, 직접 작성한 코드라고 설명할 수 있을 정도로 이해하고 계셔야 합니다.
-
----
+# Flutter 신입 개발자 과제 — 박예림
 
 ## 실행하기
 
-이 저장소를 그대로 사용하면 됩니다. 별도로 프로젝트를 만들지 않아도 됩니다.
-
-```bash
-flutter pub get
-flutter run
-```
-
-모든 플랫폼으로 실행할 수 있게 만들어져 있습니다. 다만 아래 두 가지를 주의해 주세요.
-
-- **웹(Chrome)에서는 동작하지 않습니다.** Naver endpoint가 CORS를 허용하지 않아 브라우저에서는 요청이 막힙니다. IDE 기본 실행 대상이 Chrome으로 잡혀 있는 경우가 많으니 실행 대상을 바꿔 주세요.
-- **모바일 기기나 에뮬레이터, 또는 Figma 프레임에 가까운 창 크기에서 확인해 주세요.** 데스크톱에서 창을 크게 띄우고 비교하면 의미가 없습니다.
-
-macOS 데스크톱으로 확인하실 경우 네트워크 요청에 entitlement가 필요합니다. debug 실행은 기본 설정으로 동작합니다.
+- [x] Flutter 버전, 실행 명령
+  - Flutter `3.47.3` (Dart `3.13.3`, `stable` 채널) / `pubspec.yaml`의 SDK 제약은 `^3.11.5`
+    ```bash
+    flutter pub get
+    flutter run
+    ```
+- [x] 확인한 플랫폼과 기기
+  - Android Studio 가상 기기 — Medium Phone API 37.1
+  - 실제 기기 — Galaxy S26 Ultra
+- [x] 폰트 처리 방식 (기본 제공 방식을 바꿨다면 그 이유)
+  - `NotoSansKR`을 기본 제공 방식 그대로 사용했습니다.
 
 ---
 
-## 저장소 구성
+## 구현 범위
 
-`flutter create` 직후의 기본 템플릿에 **디자인 토큰과 폰트만 미리 준비해 둔 상태**입니다.
-
-```text
-docs/
-  ASSIGNMENT.md           과제 요구사항 · 평가 기준 · 제출 방법
-  NAVER_API.md            Naver 데이터 연동 가이드
-lib/
-  main.dart               앱 진입점. 시작용 화면이 들어 있습니다
-  theme/
-    README.md             Figma 변수 ↔ Dart 필드 대응표
-    app_palette.dart      원시 팔레트 (Figma Primitives)
-    app_colors.dart       시맨틱 색상 토큰 (Figma Semantic / Dark)
-    app_dimens.dart       간격 · 반경 · 크기 토큰 (Figma Scale)
-    app_typography.dart   서체 · 굵기 토큰 (Figma Typography)
-    app_theme.dart        ThemeData 조립 + context 확장
-    theme.dart            barrel
-assets/
-  fonts/                  Noto Sans KR (등록까지 마쳐둔 상태입니다)
-  mock/                   응답 샘플을 저장해 쓰실 위치입니다
-```
-
-`lib/` 아래 나머지 구조는 없습니다. **폴더 구조와 아키텍처는 직접 설계해 주세요.**
-
-`lib/main.dart`의 `StartHereScreen`은 토큰 사용 예시를 겸한 임시 화면입니다. 지우고 직접 구현한 화면으로 바꿔 주세요.
+- [x] 필수 항목 중 완료한 것 / 남은 것
+  - 관심 화면 — 종목 정보 표시, 상승/하락/보합 색상, 새로고침, 하단 탭 전환, 스켈레톤, 빈 상태, 정렬(3종 + 체크 표시)
+  - 검색 화면 — 입력창/지우기, 검색어 하이라이트, 관심 등록·해제(즉시 반영 + 토스트), 상세 이동, 초기 상태, 결과 없음 상태
+  - 종목상세 화면 — 헤더, 현재가·등락, 기간 탭 4종, 캔들 차트, 요약 카드 5종(축약 표기), 일별 시세 표
+  - 상태 동기화 — 관심 상태가 관심/검색/상세 화면에서 항상 일치
+  - Naver API 4종(검색 자동완성, 실시간 시세, 메타데이터, 일별 시세) 연동
+  - 남은 필수 항목은 없습니다.
+- [x] 추가로 구현한 선택 항목
+  - 관심종목 삭제 (좌측 스와이프)
+  - 정렬 기준을 `shared_preferences`에 저장해 앱 재실행 후에도 유지
+  - 관심 화면에서 시세 로드 실패 시 안내 배너 표시
+  - 디바운스, 최근 검색어, 토스트 애니메이션, Pull to refresh, 차트 축 라벨/거래량 바/영역 채우기/크로스헤어/무한 스크롤/차트 전환 애니메이션은 구현하지 않았습니다.
+- [x] 테스트를 작성했다면 `flutter test` 실행 결과
+  ```bash
+  flutter analyze   # No issues found
+  flutter test      # 전체 통과 (모델 파싱 테스트 3개, 위젯 테스트 1개)
+  ```
 
 ---
 
-## 디자인 토큰
+## 기술 선택과 이유
 
-색상은 `ThemeExtension`으로 정의되어 있습니다. `AppTheme.dark`가 `MaterialApp`에 이미 연결되어 있으니 `context`로 꺼내 쓰시면 됩니다.
-
-```dart
-MaterialApp(
-  theme: AppTheme.dark,
-  home: const WatchlistScreen(),
-)
-```
-
-```dart
-Text(
-  '삼성전자',
-  style: TextStyle(color: context.colors.textPrimary),
-)
-
-Container(
-  padding: EdgeInsets.symmetric(horizontal: context.dimens.space4),
-  decoration: BoxDecoration(
-    color: context.colors.surfaceRaised,
-    borderRadius: BorderRadius.circular(context.dimens.radiusMd),
-  ),
-)
-```
-
-지켜 주셔야 할 것:
-
-- **토큰 값을 수정하지 마세요.** 색상 hex를 화면 코드에 직접 쓰거나 `AppPalette`를 화면에서 바로 참조하지 말고, 항상 `context.colors.*` 시맨틱 토큰을 쓰세요. (필수)
-- 필요한 토큰이 없다고 판단되면 추가해도 됩니다. 다만 왜 추가했는지 메모에 적어 주세요.
-- **글자 크기와 행간은 토큰으로 정의되어 있지 않습니다.** Figma는 서체와 굵기만 변수로 관리하고 있어서, 크기는 각 화면의 텍스트 레이어에서 직접 확인해 주세요.
-
-Figma 변수명과 Dart 필드명, 원시값, hex는 [`lib/theme/README.md`](lib/theme/README.md)에 1:1로 정리해 두었습니다. Figma에서 본 색이 코드의 어느 필드인지 헷갈릴 때 그 표를 보시면 됩니다.
-
-### 폰트
-
-`Noto Sans KR`을 사용합니다. 폰트 파일과 `pubspec.yaml` 등록은 **미리 해두었으니 따로 작업하지 않으셔도 됩니다.**
-
-`assets/fonts/`에 Regular / Medium / Bold 세 가지 굵기가 들어 있고, `AppTypography.fontFamily`(`'NotoSansKR'`)와 같은 이름으로 등록되어 있습니다. `AppTheme.dark`가 이 family를 기본 서체로 잡아둡니다.
-
-다른 방식(예: `google_fonts` 패키지)으로 바꾸셔도 무방합니다. 바꾸셨다면 메모에 적어 주세요.
+- [x] 상태관리, 폴더 구조, 아키텍처 패턴
+  - **상태관리 — Riverpod**: 검색/시세/메타데이터/일별시세 등 비동기 데이터가 많고, 종목 심볼별로 캐싱된 상태를 따로 관리해야 해서 `AsyncNotifier`/`Notifier`/`FutureProvider.family`/`AsyncNotifierProvider.family` 조합 사용.
+  - **폴더 구조**: `models` / `services` / `providers` / `screens` / `widgets` / `theme` / `utils`로 계층 분리. `favorites`, `quotes` 등 여러 화면(검색/상세/관심목록)에서 같이 쓰는 provider가 많아서, 화면별 폴더보다 종류별 폴더가 더 맞다고 판단했습니다.
+- [x] 주요 패키지
+  - `flutter_riverpod` — 상태관리. `Provider`(InheritedWidget 기반)는 비동기 상태 처리가 번거롭고, `Bloc`은 이 앱 규모에 비해 Event 클래스 등 보일러플레이트가 많아서 제외했습니다. `AsyncNotifier`/`FutureProvider.family`로 종목 심볼별 캐싱과 로딩/에러 상태를 코드 몇 줄로 처리할 수 있고, `BuildContext` 없이도 `ref`로 상태를 읽고 쓸 수 있어서 서비스 계층과의 연결이 깔끔했습니다.
+  - `http` — 네트워크 요청. `dio`는 인터셉터, 자동 재시도, 요청 취소 같은 기능이 강점인데, 이 앱은 인증 헤더도 없고 단순 GET 4종만 호출하면 돼서 그 기능들이 필요 없었습니다. Flutter 팀이 직접 관리하는 최소 의존성 패키지라 `http`를 선택했습니다.
+  - `html` — 일별 시세가 JSON이 아니라 HTML 테이블로 내려와서 파싱이 필요했습니다. 정규식으로 직접 파싱하는 것도 가능했지만, 마크업이 조금만 바뀌어도 깨지기 쉬워서 `querySelector` 기반으로 안정적으로 파싱할 수 있는 이 패키지를 사용했습니다.
+  - `cp949_codec` — 일별 시세 응답이 EUC-KR(CP949) 인코딩인데, `dart:convert`가 기본 제공하는 건 UTF-8/Latin1/ASCII뿐이라 별도 패키지가 필요했습니다.
+  - `shared_preferences` — 정렬 기준·관심종목을 앱 재실행 후에도 유지하려고 사용했습니다. 저장할 데이터가 문자열/간단한 리스트 수준이라, `sqflite`나 `hive` 같은 로컬 DB는 이 규모에 과했다고 판단해 키-값 저장소로 충분한 이 패키지를 선택했습니다.
+  - `flutter_svg` — Flutter 기본 `Image.asset`은 SVG를 지원하지 않습니다. Figma 아이콘을 PNG로 내보내면 해상도별(1x/2x/3x) 에셋을 따로 관리해야 하는데, SVG는 벡터라 한 파일로 어떤 화면 밀도에서도 선명하게 표시돼서 선택했습니다.
+- [x] 차트 처리 방식 (패키지 / `CustomPainter`)
+  - `CustomPainter`로 직접 구현([`candle_chart.dart`](lib/widgets/candle_chart.dart)). 상승/하락 캔들 색상, 상하 요소 배치만 맞추면 되는 수준이라 패키지 없이 직접 그리는 쪽이 더 간단.
+- [x] 디자인 토큰을 추가했다면 그 이유
+  - `selectedForeground` (`#FAFAFA`) — 정렬 바텀시트에서 선택된 항목의 체크 아이콘 색([selection_bottom_sheet.dart](lib/widgets/selection_bottom_sheet.dart))
+  - `radiusXl`(16) — 정렬 바텀시트 상단 모서리 radius
+  - `scrim` — 모달 배리어(정렬 바텀시트 뒤 어둡게 처리하는 색)
+  - `shadow` — 토스트 그림자
+  - 공통적으로, Figma 변수에 없는 값도 화면 코드에 하드코딩된 값을 넣어두면 나중에 어떤 color, radius가 쓰이고 있는지 파악하기 어렵고 유지보수도 힘들어져서, 발견할 때마다 토큰으로 등록해 한곳에서 관리하도록 하였습니다.
+  - (`lib/theme/README.md` 대응표에도 반영)
 
 ---
 
-## 이 README에 대해
+## 직접 판단한 부분과 이유
 
-제출 시 이 문서는 **본인 프로젝트의 README로 덮어써 주세요.** 작성할 내용은 [`docs/ASSIGNMENT.md`의 제출 방법](docs/ASSIGNMENT.md#제출-방법)에 정리되어 있습니다. `docs/` 아래 문서는 남겨 두시면 됩니다.
+- [x] 토스트 노출 시간과 사라지는 방식
+  - `ScaffoldMessenger`의 기본 `SnackBar`를 사용해 기본 노출 시간(약 4초)에 자동으로 사라지도록 했습니다([`app_toast.dart`](lib/widgets/app_toast.dart)). 등장/퇴장 애니메이션은 선택 항목이고, 문구 확인용 토스트라 노출 시간·애니메이션을 직접 튜닝할 만큼 우선순위가 높지 않다고 판단해 기본 동작을 그대로 썼습니다. 별 아이콘을 연속으로 여러 번 누르면 토스트가 쌓여서 오래된 메시지가 계속 보일 수 있어, 새 토스트를 띄우기 전 `clearSnackBars()`로 이전 토스트를 먼저 지우도록 했습니다.
+- [x] 로딩 / 네트워크 에러 / 긴 종목명 오버플로 처리
+  - **로딩** — 검색 화면과 상세 화면(현재가·일별 시세)은 `CircularProgressIndicator`로 표시했습니다. 관심 화면은 전체를 로딩 화면으로 덮지 않고, 아직 시세를 못 받은 행만 가격 영역을 스켈레톤으로 표시했습니다([watchlist_row_tile.dart](lib/widgets/watchlist_row_tile.dart)). 관심 목록은 이미 로컬에 등록된 종목 목록이라 시세만 늦게 도착하는 것뿐인데, 화면 전체를 로딩으로 덮으면 "등록한 종목이 사라졌나" 오해할 수 있어서 목록 구조(종목명·시장 정보)는 유지하고 가격 부분만 비워두는 쪽을 택했습니다.
+  - **오류 처리** — 검색/상세 화면에서 네트워크 실패 시 내부 예외 문자열을 그대로 보여주지 않고, 사용자용 문구 + 재시도 버튼(`ref.invalidate`)으로 처리했습니다. 예외 메시지를 그대로 노출하면 사용자에게 의미 없는 정보이고, 네트워크 오류는 대부분 일시적이라 재요청으로 복구될 수 있어 재시도 버튼을 뒀습니다. 원본 에러는 `kDebugMode`일 때만 `developer.log`로 남겨서, 사용자에게는 문구만 보여주면서도 개발 중 디버깅에는 쓸 수 있게 했습니다.
+  - **긴 종목명** — 관심 목록과 검색 결과는 `maxLines: 1` + `TextOverflow.ellipsis`로 한 줄 말줄임 처리했습니다. 가격 정보가 함께 있는 행 레이아웃이라 이름이 길어져 여러 줄이 되면 행 높이가 들쭉날쭉해지고 가격 영역과의 정렬이 깨지기 때문입니다. 반대로 상세 화면 헤더는 종목명을 정확히 확인하는 게 더 중요하고 다른 요소와 한 줄로 정렬을 맞출 필요가 없어서, 줄 수를 제한하지 않고 줄바꿈되어 전체가 보이도록 했습니다.
+- [x] 시세를 못 받은 행이 있을 때의 정렬 처리
+  - `현재가순`/`등락률순`에서는 시세가 없는 종목을 항상 맨 뒤로 보내고, `가나다순`은 시세 유무와 무관하게 이름만으로 정렬합니다([`watchlist_provider.dart`](lib/providers/watchlist_provider.dart)). `현재가순`/`등락률순`은 정렬 기준 자체가 시세 값인데, 시세가 없는 종목은 비교할 값이 없어 순위를 매길 수 없습니다. 맨 앞이나 중간에 두면 마치 값이 0이거나 가장 낮은 것처럼 보여 사용자가 실제 시세로 오인할 수 있어서, 판단이 불가능한 항목이라는 의미로 맨 뒤에 뒀습니다. `가나다순`은 종목명이 시세 수신 여부와 무관하게 항상 존재하는 값이라 이런 예외 처리가 필요 없다고 판단했습니다.
+- [x] Figma와 다르게 구현한 부분
+  - 여백/폰트/색상은 Figma 값을 그대로 사용했습니다. 다만 관심 등록 별 아이콘, 검색창의 돋보기·닫기 아이콘은 Figma SVG 대신 Flutter 기본 아이콘(`Icons.star` 등)에 색상 토큰만 입혀서 썼습니다. 상태(켜짐/꺼짐)에 따라 모양이 바뀌어야 하는 아이콘이라, 상태별로 SVG 파일을 따로 만들지 않아도 되는 기본 아이콘 쪽이 더 간단하다고 판단했습니다. 새로고침·정렬·뒤로가기처럼 항상 같은 모양인 아이콘은 Figma SVG를 그대로 썼습니다.
 
-## 라이선스
+---
 
-이 저장소는 이든크루 채용 과제의 스타터 템플릿으로만 제공됩니다. 과제 수행을 위해 복제하고 수정하는 것은 괜찮습니다. 다만 그 범위를 넘어선 재배포나 상업적 이용은 Edencrew의 명시적인 허가 없이 허용되지 않습니다. 자세한 내용은 루트의 `LICENSE` 파일을 확인해 주세요.
+## 막혔던 지점과 어떻게 접근했는지
 
-**별도로 전달드린 Figma 시안과 Lucy Studio 설치 파일은 외부에 공유하지 말아주세요.**
+- **실시간 시세 API가 이유 없이 406 에러를 냄** — `Accept: application/json` 헤더를 넣었더니 실시간 시세 API가 계속 406 에러를 냈습니다. curl로 헤더를 하나씩 빼보면서 직접 테스트해보니 이 헤더 하나가 원인이었습니다. 이 API가 원하는 형식이 아니면 요청 자체를 막아버리는 것 같았습니다. 그래서 공용 요청 코드(`naver_api_client.dart`)에서 이 헤더를 빼서 해결했습니다.
+- **일별 시세 페이지가 계속 에러 화면으로 옴** — 일별 시세 페이지를 요청했는데 실제 표 데이터가 아니라 네이버의 에러 페이지가 돌아왔습니다. curl로 확인해보니 `User-Agent`(요청을 보낸 프로그램이 뭔지 알려주는 값) 헤더가 없으면 막힌다는 걸 알게 됐고, 이 헤더를 추가해서 해결했습니다. 그리고 응답 글자가 깨져서 나왔는데, 이 페이지가 UTF-8이 아니라 EUC-KR이라는 다른 방식으로 인코딩되어 있었습니다. 그래서 `cp949_codec` 패키지로 디코딩을 추가했습니다.
+- **상세 화면의 시세 조회 방식 분리** — 관심 화면에서는 `quotesProvider`가 관심종목 전체의 시세를 한 번에 조회합니다. 하지만 상세 화면에서는 관심종목으로 등록하지 않은 종목도 표시해야 하므로 `stockQuoteProvider`를 별도로 만들었습니다. `stockQuoteProvider`는 `ref.read`로 `quotesProvider`에 이미 해당 종목의 시세가 있는지 한 번 확인하고, 있으면 기존 데이터를 재사용하며 없으면 해당 종목만 따로 조회합니다. `quotesProvider`를 구독하지 않기 때문에 관심 목록 변경으로 시세가 다시 조회되더라도 상세 화면의 시세 상태는 그 재조회에 따라 변경되지 않습니다.
+- **요청 코드가 데이터 해석까지 해야 하나** — API를 요청하는 공통 코드(`naver_api_client.dart`)가 응답 데이터 해석(파싱)까지 해야 할지, 요청/응답만 담당해야 할지 고민했습니다. 역할을 나누는 게 나중에 고치기 쉬울 것 같아서, 요청 코드는 HTTP 요청과 상태 코드 확인만 하고, 데이터 해석은 기능별 코드(`meta_service`, `quote_service`, `search_service`)가 맡도록 나눴습니다.
+- **`AsyncValue.valueOrNull`이 컴파일 에러** — 참고하던 예제 코드는 구버전 Riverpod 기준이라 `valueOrNull`이라는 게 있었는데, 실제 설치한 버전(`flutter_riverpod ^3.4.3`)에는 이게 없어졌습니다. 패키지 코드를 직접 열어서 확인해보니 `.value` 자체가 이제 비어있을 수도 있는 값으로 바뀐 걸 알게 돼서 `.value`로 바꿔서 해결했습니다.
